@@ -1,7 +1,6 @@
 const PRODUCTS = [
    { category: "Fruits", price: "$1", stocked: true, name: "Apple" },
    { category: "Fruits", price: "$1", stocked: true, name: "Dragonfruit" },
-   { category: "Fruits", price: "$2", stocked: false, name: "Passionfruit" },
    { category: "Vegetables", price: "$2", stocked: true, name: "Spinach" },
    { category: "Vegetables", price: "$4", stocked: false, name: "Pumpkin" },
    { category: "Vegetables", price: "$1", stocked: true, name: "Peas" },
@@ -38,8 +37,22 @@ const SearchBar = () => {
 // Still though, When code I love to start small and simple, then refactor later when needed
 // refactor is a method to improve code structure without changing its functionality (thanks AI bot)
 // like building ProductRow component first & render the data here momentarily, until further development causing this component to be updated
-const ProductTable = () => {
-   const products = PRODUCTS;
+const ProductTable = ({ products }) => {
+   const rows = [];
+   let lastCategory = null;
+
+   products.map((product) => {
+      if (product.category !== lastCategory) {
+         rows.push(
+            <ProductCategoryRow
+               category={product.category}
+               key={product.category}
+            />
+         );
+      }
+      rows.push(<ProductRow product={product} key={product.name} />);
+      lastCategory = product.category;
+   });
    return (
       <table>
          <thead>
@@ -48,23 +61,17 @@ const ProductTable = () => {
                <th>Price</th>
             </tr>
          </thead>
-         <tbody>
-            <ProductRow products={products} />
-         </tbody>
+         <tbody>{rows}</tbody>
       </table>
    );
 };
 
-const ProductRow = ({ products }) => {
+const ProductRow = ({ product }) => {
    return (
-      <>
-         {products.map((product) => (
-            <tr key={product.name}>
-               <td>{product.name}</td>
-               <td>{product.price}</td>
-            </tr>
-         ))}
-      </>
+      <tr key={product.name}>
+         <td>{product.name}</td>
+         <td>{product.price}</td>
+      </tr>
    );
 };
 
