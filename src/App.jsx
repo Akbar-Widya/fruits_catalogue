@@ -27,7 +27,19 @@ const SearchBar = () => {
    // );
 };
 
+// I think the products data should be fethed here, because rows <tr> is always inside table
+// Although search bar might need the products data too. That way we need to lift the variable
+// ..one level above ProductTable or SearchBar
+// Why? smart question. That's because we should approach using one source of data
+// ..even if a data fetch from or post to data API is always the same place regardless it's a nice safe measure
+// Comment lines below comes from AI bot, I also just realized this, although I might knew it unconsciously
+// ..to avoid data inconsistency. Imagine if SearchBar and ProductTable each fetches the data separately
+// ..what if one fetch is successful but the other fails? Then we have inconsistent data state in the app
+// Still though, When code I love to start small and simple, then refactor later when needed
+// refactor is a method to improve code structure without changing its functionality (thanks AI bot)
+// like building ProductRow component first & render the data here momentarily, until further development causing this component to be updated
 const ProductTable = () => {
+   const products = PRODUCTS;
    return (
       <table>
          <thead>
@@ -37,24 +49,23 @@ const ProductTable = () => {
             </tr>
          </thead>
          <tbody>
-            <ProductRows />
+            <ProductRow products={products} />
          </tbody>
       </table>
    );
 };
 
-const ProductRows = () => {
-   const rows = [];
-   const productRows = PRODUCTS;
-   productRows.map((product) => {
-      rows.push(
-         <tr key={product.name}>
-            <td>{product.name}</td>
-            <td>{product.price}</td>
-         </tr>
-      );
-   });
-   return <>{rows}</>;
+const ProductRow = ({ products }) => {
+   return (
+      <>
+         {products.map((product) => (
+            <tr key={product.name}>
+               <td>{product.name}</td>
+               <td>{product.price}</td>
+            </tr>
+         ))}
+      </>
+   );
 };
 
 // const ProductTable = ({ products }) => {
